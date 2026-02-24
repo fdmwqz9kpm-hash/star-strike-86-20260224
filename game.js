@@ -52,7 +52,8 @@ const player = {
 const scoreMap = {
   grunt: 80,
   escort: 150,
-  boss: 300
+  boss: 300,
+  mothership: 500
 };
 
 for (let i = 0; i < 120; i += 1) {
@@ -105,7 +106,8 @@ function createWave(level) {
     { type: "boss", count: 4, hp: 2, offset: 0 },
     { type: "escort", count: 6, hp: 1, offset: 0 },
     { type: "escort", count: 6, hp: 1, offset: 1 },
-    { type: "grunt", count: 8, hp: 1, offset: 0 }
+    { type: "grunt", count: 8, hp: 1, offset: 0 },
+    { type: "mothership", count: 1, hp: 4, offset: 0 }
   ];
 
   let y = 86;
@@ -361,7 +363,7 @@ function handleCollisions() {
 
     for (let j = enemies.length - 1; j >= 0; j -= 1) {
       const e = enemies[j];
-      const radius = e.type === "boss" ? 14 : 12;
+      const radius = e.type === "mothership" ? 18 : e.type === "boss" ? 14 : 12;
 
       if (isHit(b.x, b.y, 4, e.x, e.y, radius)) {
         e.hp -= 1;
@@ -371,8 +373,8 @@ function handleCollisions() {
           createExplosion(
             e.x,
             e.y,
-            e.type === "boss" ? "#ffd76b" : e.type === "escort" ? "#ff6f85" : "#7efcff",
-            12
+            e.type === "mothership" ? "#ff38a1" : e.type === "boss" ? "#ffd76b" : e.type === "escort" ? "#ff6f85" : "#7efcff",
+            e.type === "mothership" ? 20 : 12
           );
           game.score += scoreMap[e.type];
           enemies.splice(j, 1);
@@ -455,6 +457,24 @@ function drawEnemy(enemy) {
     ctx.fillRect(-10, -2, 20, 3);
     ctx.fillStyle = "#4b1920";
     ctx.fillRect(-3, -6, 6, 5);
+  } else if (enemy.type === "mothership") {
+    ctx.fillStyle = "#e8428f";
+    ctx.beginPath();
+    ctx.moveTo(0, -18);
+    ctx.lineTo(16, -8);
+    ctx.lineTo(20, 0);
+    ctx.lineTo(16, 8);
+    ctx.lineTo(0, 16);
+    ctx.lineTo(-16, 8);
+    ctx.lineTo(-20, 0);
+    ctx.lineTo(-16, -8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#b91e5c";
+    ctx.fillRect(-12, -4, 24, 6);
+    ctx.fillStyle = "#ff9ec7";
+    ctx.fillRect(-4, -10, 8, 4);
+    ctx.fillRect(-6, 6, 12, 3);
   } else if (enemy.type === "escort") {
     ctx.fillStyle = "#ff6f87";
     ctx.beginPath();
