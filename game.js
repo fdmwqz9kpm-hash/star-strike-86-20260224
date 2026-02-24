@@ -24,8 +24,11 @@ const stars = [];
 const playerBullets = [];
 const enemyBullets = [];
 const particles = [];
+const powerUps = [];
 
 let enemies = [];
+let waveSize = 0;
+let pacmanSpawnedThisWave = false;
 let formationTime = 0;
 let animationId = 0;
 let previousTs = 0;
@@ -101,6 +104,7 @@ function resetPlayer() {
 function createWave(level) {
   enemies = [];
   activeDivers = 0;
+  pacmanSpawnedThisWave = false;
 
   const rows = [
     { type: "boss", count: 4, hp: 2, offset: 0 },
@@ -143,6 +147,7 @@ function createWave(level) {
 
     y += 48;
   });
+  waveSize = enemies.length;
 }
 
 function createExplosion(x, y, color, amount) {
@@ -166,6 +171,19 @@ function spawnPlayerBullet() {
     x: player.x,
     y: player.y - player.h / 2 - 4,
     vy: -510
+  });
+}
+
+function spawnPacmanPowerUp() {
+  if (pacmanSpawnedThisWave || powerUps.length > 0) return;
+  pacmanSpawnedThisWave = true;
+  powerUps.push({
+    type: "pacman",
+    x: 60 + Math.random() * (W - 120),
+    y: -24,
+    vy: 42,
+    mouthPhase: Math.random() * Math.PI * 2,
+    radius: 14
   });
 }
 
@@ -241,6 +259,15 @@ function updateParticles(dt) {
     p.vx *= 0.97;
     p.vy *= 0.97;
     if (p.life <= 0) particles.splice(i, 1);
+  }
+}
+
+function updatePowerUps(dt) {
+  for (let i = powerUps.length - 1; i >= 0; i -= 1) {
+    const pu = powerUps[i];
+    pu.y += pu.vy * dt;
+    pu.mouthPhase += dt * 8;
+    if (pu.y > H + 30) powerUps.splice(i, 1);
   }
 }
 
@@ -378,6 +405,9 @@ function handleCollisions() {
           );
           game.score += scoreMap[e.type];
           enemies.splice(j, 1);
+          if (enemies.length <= Math.ceil(waveSize / 2) && !pacmanSpawnedThisWave) {
+            spawnPacmanPowerUp();
+          }
           if (e.state === "diving" || e.state === "returning") {
             activeDivers = Math.max(0, activeDivers - 1);
           }
@@ -406,6 +436,16 @@ function handleCollisions() {
       createExplosion(e.x, e.y, "#ff8ba5", 10);
       damagePlayer();
       break;
+    }
+  }
+
+  for (let i = powerUps.length - 1; i >= 0; i -= 1) {
+    const pu = powerUps[i];
+    if (isHit(pu.x, pu.y, pu.radius, player.x, player.y, 11)) {
+      game.score += 1000;
+      player.invuln = Math.max(player.invuln, 3);
+      createExplosion(pu.x, pu.y, "#ffeb3b", 12);
+      powerUps.splice(i, 1);
     }
   }
 }
@@ -513,6 +553,23 @@ function drawEnemy(enemy) {
   ctx.restore();
 }
 
+function drawPacmanPowerUp(pu) {
+  const mouthOpen = 0.25 + Math.sin(pu.mouthPhase) * 0.2;
+  ctx.save();
+  ctx.translate(pu.x, pu.y);
+  ctx.rotate(Math.PI / 2);
+  ctx.fillStyle = "#ffeb3b";
+  ctx.beginPath();
+  ctx.arc(0, 0, pu.radius, mouthOpen * Math.PI, (2 - mouthOpen) * Math.PI);
+  ctx.lineTo(0, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = "#b8860b";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.restore();
+}
+
 function drawBullets() {
   ctx.fillStyle = "#fffd93";
   for (const b of playerBullets) {
@@ -562,6 +619,7 @@ function draw() {
   drawStars();
   drawBullets();
 
+  for (const pu of powerUps) drawPacmanPowerUp(pu);
   for (const e of enemies) drawEnemy(e);
   drawPlayer();
   drawParticles();
@@ -577,6 +635,7 @@ function update(dt) {
   updatePlayer(dt);
   updateBullets(dt);
   updateEnemies(dt);
+  updatePowerUps(dt);
   handleCollisions();
 
   if (enemies.length === 0) {
@@ -604,6 +663,7 @@ function beginGame() {
   playerBullets.length = 0;
   enemyBullets.length = 0;
   particles.length = 0;
+  powerUps.length = 0;
   formationTime = 0;
   resetPlayer();
   createWave(game.level);
@@ -652,7 +712,7 @@ bindTouchButton(controls.fireBtn, "fire");
 
 startBtn.addEventListener("click", startOrRestart);
 
-setOverlay("READY", "Arrow keys / A-D move, Space fires", "Start Mission");
+setOverlay("READY", "Arrow keys / A-D move, Space fires. Catch Pac-Man for +1000 and power-up!", "Start Mission");
 draw();
 previousTs = performance.now();
 animationId = requestAnimationFrame(loop);
