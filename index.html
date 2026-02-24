@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Star Strike '86</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Chakra+Petch:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="cabinet">
+    <header class="title-wrap">
+      <h1>STAR STRIKE '86</h1>
+      <p>Galaga-style arcade tribute</p>
+    </header>
+
+    <section class="screen-wrap">
+      <canvas id="game" width="480" height="640" aria-label="Arcade game canvas"></canvas>
+      <div id="overlay" class="overlay">
+        <h2 id="overlayTitle">READY</h2>
+        <p id="overlayText">Arrow keys / A-D to move, Space to fire</p>
+        <button id="startBtn">Start Mission</button>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="Touch controls">
+      <button id="leftBtn">◀</button>
+      <button id="fireBtn">FIRE</button>
+      <button id="rightBtn">▶</button>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>

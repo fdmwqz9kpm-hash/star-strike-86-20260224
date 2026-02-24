@@ -1,0 +1,173 @@
+:root {
+  --bg-deep: #04030a;
+  --bg-mid: #0f1630;
+  --cabinet-edge: #1e2239;
+  --neon-cyan: #78fff5;
+  --neon-red: #ff6771;
+  --ink: #dbe8ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background:
+    radial-gradient(80% 60% at 20% 0%, #27355f 0%, transparent 60%),
+    radial-gradient(70% 60% at 90% 100%, #3d1537 0%, transparent 58%),
+    linear-gradient(180deg, var(--bg-mid), var(--bg-deep) 45%, #020205 100%);
+  color: var(--ink);
+  font-family: "Chakra Petch", sans-serif;
+}
+
+.cabinet {
+  width: min(96vw, 640px);
+  padding: 1rem;
+  border: 2px solid #39406a;
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, #0f1329, #080912 50%, #0a1228),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 16px,
+      rgba(255, 255, 255, 0.02) 16px 18px
+    );
+  box-shadow:
+    inset 0 0 0 2px var(--cabinet-edge),
+    0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.title-wrap {
+  text-align: center;
+  margin-bottom: 0.8rem;
+}
+
+.title-wrap h1 {
+  margin: 0;
+  font: 400 1.2rem/1.3 "Press Start 2P", monospace;
+  color: #f8fcff;
+  text-shadow: 0 0 10px rgba(120, 255, 245, 0.35);
+}
+
+.title-wrap p {
+  margin: 0.5rem 0 0;
+  color: #9ab4ff;
+  letter-spacing: 0.05em;
+}
+
+.screen-wrap {
+  position: relative;
+  margin: 0 auto;
+  width: min(96vw, 480px);
+  border: 2px solid #49637d;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 2px rgba(120, 255, 245, 0.25),
+    inset 0 0 30px rgba(120, 255, 245, 0.08);
+}
+
+#game {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  image-rendering: pixelated;
+  background: #02020b;
+}
+
+.screen-wrap::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.08) 0 1px,
+      rgba(0, 0, 0, 0) 1px 3px
+    );
+  mix-blend-mode: soft-light;
+  opacity: 0.35;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  gap: 0.4rem;
+  align-content: center;
+  text-align: center;
+  padding: 1rem;
+  background: rgba(3, 4, 11, 0.72);
+  backdrop-filter: blur(2px);
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.overlay h2 {
+  margin: 0;
+  font: 400 1.1rem/1.3 "Press Start 2P", monospace;
+  color: var(--neon-cyan);
+}
+
+.overlay p {
+  margin: 0.3rem 0 0.6rem;
+  max-width: 30ch;
+}
+
+#startBtn {
+  border: 1px solid #7ed5ff;
+  background: linear-gradient(180deg, #2f436d, #1b2644);
+  color: #e4f4ff;
+  border-radius: 999px;
+  padding: 0.55rem 0.95rem;
+  font: 600 0.95rem/1 "Chakra Petch", sans-serif;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+#startBtn:active {
+  transform: translateY(1px);
+}
+
+.controls {
+  margin-top: 0.8rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.controls button {
+  border: 1px solid #5c6f93;
+  background: linear-gradient(180deg, #31385c, #1a1f35);
+  color: #f5f8ff;
+  border-radius: 10px;
+  min-height: 46px;
+  font: 600 1rem/1 "Chakra Petch", sans-serif;
+  touch-action: none;
+}
+
+#fireBtn {
+  border-color: #b65f6f;
+  background: linear-gradient(180deg, #5f2130, #35131f);
+}
+
+@media (min-width: 760px) {
+  .controls {
+    max-width: 360px;
+    margin: 0.9rem auto 0;
+  }
+}
